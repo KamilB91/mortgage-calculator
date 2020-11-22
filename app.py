@@ -20,65 +20,158 @@ def fixed():
         installments_months = period_years * 12  # n
         overpayment = 0
 
-        q = 1+(interest/12)  # q
-
         mortgage_details = []
-        installment_value = mortgage*(q**installments_months)*(q-1)/((q**installments_months)-1)  # R
-        total_cost = installment_value*installments_months  # C
-        for i in range(1, installments_months+1):
-            interest_value = mortgage_remaining * interest / 12
-            principal = installment_value - interest_value
-            if form.overpayment_month_range:
-                if i in range(int(form.overpayment_month.data), int(form.overpayment_month_range.data)+1):
-                    overpayment = form.overpayment_value.data
-                    mortgage_remaining -= overpayment
-                else:
-                    overpayment = 0
-            elif str(i) in form.overpayment_month.data:
-                overpayment = form.overpayment_value.data
-                mortgage_remaining -= overpayment
-            else:
-                overpayment = 0
 
-            if mortgage_remaining < 0:
-                mortgage_remaining = 0
-                installment_value = 0
-                principal = 0
-                interest_value = 0
-            elif mortgage_remaining < installment_value:
-                interest_value = mortgage_remaining * interest / 12
-                installment_value = mortgage_remaining + interest_value
-                principal = installment_value - interest_value
-                mortgage_remaining -= principal
-            else:
-                mortgage_remaining -= principal
+        if form.mortgage_type.data == 'fixed':
+            q = 1 + (interest / 12)  # q
+            installment_value = mortgage*(q**installments_months)*(q-1)/((q**installments_months)-1)  # R
+            total_cost = installment_value*installments_months  # C
+            if form.option.data == 'short':
+                for i in range(1, installments_months+1):
+                    interest_value = mortgage_remaining * interest / 12
+                    principal = installment_value - interest_value
+                    if form.overpayment_end.data != 0:
+                        if i in range(int(form.overpayment_start.data), int(form.overpayment_end.data)+1):
+                            overpayment = form.overpayment_value.data
+                            mortgage_remaining -= overpayment
+                        else:
+                            overpayment = 0
+                    elif i == form.overpayment_start.data:
+                        overpayment = form.overpayment_value.data
+                        mortgage_remaining -= overpayment
+                    else:
+                        overpayment = 0
 
-            mortgage_details.append(dict(installment_value=round(installment_value, 2), principal=round(principal, 2),
-                                         interest_value=round(interest_value, 2), remaining_mortgage=round(mortgage_remaining, 2),
-                                         overpayment=overpayment))
-        return render_template('fixed_mortgage.html', table=table(mortgage_details))
+                    if mortgage_remaining <= 0:
+                        mortgage_remaining = 0
+                        installment_value = 0
+                        principal = 0
+                        interest_value = 0
+                    elif mortgage_remaining < installment_value:
+                        interest_value = mortgage_remaining * interest / 12
+                        installment_value = mortgage_remaining + interest_value
+                        principal = installment_value - interest_value
+                        mortgage_remaining -= principal
+                    else:
+                        mortgage_remaining -= principal
 
-    return render_template('fixed.html', form=form)
+                    mortgage_details.append(dict(month=i, installment_value=round(installment_value, 2), principal=round(principal, 2),
+                                                 interest_value=round(interest_value, 2), remaining_mortgage=round(mortgage_remaining, 2),
+                                                 overpayment=overpayment))
+                return render_template('fixed_mortgage.html', table=table(mortgage_details))
+            elif form.option.data == 'lower':
+                remaining_months = installments_months
+                for i in range(1, installments_months+1):
+                    interest_value = mortgage_remaining * interest / 12
+                    principal = installment_value - interest_value
+                    if form.overpayment_end.data != 0:
+                        if i in range(int(form.overpayment_start.data), int(form.overpayment_end.data)+1):
+                            overpayment = form.overpayment_value.data
+                            mortgage_remaining -= overpayment
+                        else:
+                            overpayment = 0
+                    elif i == form.overpayment_start.data:
+                        overpayment = form.overpayment_value.data
+                        mortgage_remaining -= overpayment
+                    else:
+                        overpayment = 0
 
+                    remaining_months -= 1
 
-@app.route('/variable')
-def variable():
-    form = forms.FixedForm()
-    mortgage = 234000  # A
-    interest = 0.0315  # b
-    period_years = 20
-    installments_months = period_years * 12  # n
-    paid_rates = 0  # x
-    total = []
-    for _ in range(installments_months):
-        Rk = mortgage / installments_months  # rata kapitalu
-        Ro = ((mortgage - paid_rates) * interest) / 12  # rata oprocentowania
-        paid_rates += Rk
-        total.append(Rk+Ro)
-        print(Rk+Ro)
-    print(sum(total))
-    return render_template('fixed.html', form=form)
+                    if mortgage_remaining <= 0:
+                        mortgage_remaining = 0
+                        installment_value = 0
+                        principal = 0
+                        interest_value = 0
+                    elif mortgage_remaining < installment_value:
+                        interest_value = mortgage_remaining * interest / 12
+                        installment_value = mortgage_remaining + interest_value
+                        principal = installment_value - interest_value
+                        mortgage_remaining -= principal
+                    else:
+                        mortgage_remaining -= principal
+
+                    mortgage_details.append(dict(month=i, installment_value=round(installment_value, 2), principal=round(principal, 2),
+                                                 interest_value=round(interest_value, 2), remaining_mortgage=round(mortgage_remaining, 2),
+                                                 overpayment=overpayment))
+                    if remaining_months > 0:
+                        installment_value = mortgage_remaining * (q ** remaining_months) * (q - 1) / ((q ** remaining_months) - 1)
+                return render_template('fixed_mortgage.html', table=table(mortgage_details))
+
+        elif form.mortgage_type.data == 'variable':
+            principal = mortgage / installments_months  # principal
+            if form.option.data == 'short':
+                for i in range(1, installments_months+1):
+                    if form.overpayment_end.data != 0:
+                        if i in range(int(form.overpayment_start.data), int(form.overpayment_end.data)+1):
+                            overpayment = form.overpayment_value.data
+                            mortgage_remaining -= overpayment
+                        else:
+                            overpayment = 0
+                    elif i == form.overpayment_start.data:
+                        overpayment = form.overpayment_value.data
+                        mortgage_remaining -= overpayment
+                    else:
+                        overpayment = 0
+
+                    interest_value = (mortgage_remaining * interest) / 12  # interest
+                    installment = principal + interest_value
+                    if mortgage_remaining < 0:
+                        mortgage_remaining = 0
+                        installment = 0
+                        principal = 0
+                        interest_value = 0
+                    elif mortgage_remaining < installment:
+                        interest_value = mortgage_remaining * interest / 12
+                        installment = mortgage_remaining + interest_value
+                        principal = installment - interest_value
+                        mortgage_remaining -= principal
+                    else:
+                        mortgage_remaining -= principal
+                    mortgage_details.append(dict(month=i, installment_value=round(installment, 2), principal=round(principal, 2),
+                                                 interest_value=round(interest_value, 2), remaining_mortgage=round(mortgage_remaining, 2),
+                                                 overpayment=overpayment))
+                return render_template('fixed_mortgage.html', table=table(mortgage_details))
+            elif form.option.data == 'lower':
+                remaining_months = installments_months
+                for i in range(1, installments_months+1):
+                    if form.overpayment_end.data != 0:
+                        if i in range(int(form.overpayment_start.data), int(form.overpayment_end.data)+1):
+                            overpayment = form.overpayment_value.data
+                            mortgage_remaining -= overpayment
+                            principal = mortgage_remaining / remaining_months
+                        else:
+                            overpayment = 0
+                    elif i == form.overpayment_start.data:
+                        overpayment = form.overpayment_value.data
+                        mortgage_remaining -= overpayment
+                    else:
+                        overpayment = 0
+                    interest_value = (mortgage_remaining * interest) / 12  # interest
+                    installment = principal + interest_value
+                    if mortgage_remaining < 0:
+                        mortgage_remaining = 0
+                        installment = 0
+                        principal = 0
+                        interest_value = 0
+                    elif mortgage_remaining < installment:
+                        interest_value = mortgage_remaining * interest / 12
+                        installment = mortgage_remaining + interest_value
+                        principal = installment - interest_value
+                        mortgage_remaining -= principal
+                    else:
+                        mortgage_remaining -= principal
+                    remaining_months -= 1
+                    mortgage_details.append(
+                        dict(month=i, installment_value=round(installment, 2), principal=round(principal, 2),
+                             interest_value=round(interest_value, 2), remaining_mortgage=round(mortgage_remaining, 2),
+                             overpayment=overpayment))
+                    if remaining_months > 0:
+                        principal = mortgage_remaining / remaining_months
+                return render_template('fixed_mortgage.html', table=table(mortgage_details))
+
+    return render_template('fixed_form.html', form=form)
 
 
 if __name__ == '__main__':
-    app.run()
+    app.run()  # host="192.168.0.206"

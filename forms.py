@@ -1,6 +1,6 @@
 from flask_wtf import FlaskForm
-from wtforms import IntegerField, FloatField, SubmitField, StringField
-from wtforms.validators import DataRequired
+from wtforms import IntegerField, FloatField, SubmitField, StringField, RadioField
+from wtforms.validators import DataRequired, Optional
 
 
 class FixedForm(FlaskForm):
@@ -20,13 +20,25 @@ class FixedForm(FlaskForm):
             DataRequired()
         ]
     )
-    overpayment_month = StringField(
-        'overpayment month'
+    overpayment_start = IntegerField(
+        'Overpayment month',
+        validators=[Optional()],
+        default='0'
     )
-    overpayment_month_range = StringField(
-        'overpayment month range'
+    overpayment_end = IntegerField(
+        'Overpayment month range',
+        validators=[Optional()],
+        default='0'
     )
     overpayment_value = IntegerField(
-        'overpayment value'
+        'Overpayment value',
+        validators=[Optional()],
+        default=0
     )
+    option = RadioField('How would you like to amend your installments?',
+                        choices=[('lower', 'Lower instalments value'), ('short', 'Shorten mortgage period')],
+                        default='short')
+    mortgage_type = RadioField('Fixed or variable?',
+                               choices=[('fixed', 'Fixed'), ('variable', 'Variable')],
+                               default='fixed')
     submit = SubmitField('Submit')

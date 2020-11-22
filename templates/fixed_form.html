@@ -1,0 +1,42 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+<form action="{{ url_for('fixed') }}" method="post" style="justify-content: center">
+    {{ form.hidden_tag() }}
+    <div class="element">
+        {{ form.mortgage.label }}
+        {{ form.mortgage }}
+    </div>
+    <div class="element">
+        {{ form.interest.label }}
+        {{ form.interest }}
+    </div>
+    <div class="element">
+        {{ form.period.label }}
+        {{ form.period }}
+    </div>
+    <div class="element">
+        {{ form.overpayment_start.label }}
+        {{ form.overpayment_start }}
+    </div>
+    <div class="element">
+        {{ form.overpayment_end.label }}
+        {{ form.overpayment_end }}
+    </div>
+    <div class="element">
+        {{ form.overpayment_value.label }}
+        {{ form.overpayment_value }}
+    </div>
+    <div class="element">
+        {{ form.option.label }}
+        {{ form.option }}
+    </div>
+    <div class="element">
+        {{ form.mortgage_type.label }}
+        {{ form.mortgage_type }}
+    </div>
+    <div class="element">
+        {{ form.submit }}
+    </div>
+</form>
+{% endblock %}

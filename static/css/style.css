@@ -1,0 +1,25 @@
+table tr td {
+    background-color: rgba(127, 141, 163, 1);
+    color: white;
+    padding: 5px;
+    border-collapse: collapse;
+}
+table {
+    width: 30%;
+    margin-left: 35%;
+    margin-top: 50px;
+}
+body {
+    background-color: rgba(127, 141, 163, 0.8);
+}
+
+form {
+    background-color: rgba(127, 141, 163, 1);
+    width: 200px;
+    margin-left: 40%;
+    margin-top: 50px;
+    padding: 10px;
+}
+.element {
+    padding: 10px;
+}

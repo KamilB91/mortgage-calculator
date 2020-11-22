@@ -2,8 +2,9 @@ from flask_table import Table, Col
 
 
 class FixedTable(Table):
+    month = Col('Month')
     installment_value = Col('Installment')
-    principal = Col('Principal')
     interest_value = Col('Interest Value')
-    overpayment = Col('overpayment')
+    principal = Col('Principal')
     remaining_mortgage = Col('Remaining')
+    overpayment = Col('Overpayment')
