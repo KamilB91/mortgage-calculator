@@ -1,4 +1,4 @@
-from flask import Flask, url_for, render_template
+from flask import Flask, render_template
 import forms
 import tables
 
@@ -79,4 +79,4 @@ def fixed():
 
 
 if __name__ == '__main__':
-    app.run()  # host="192.168.0.206"
+    app.run(threaded=True)

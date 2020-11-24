@@ -2,24 +2,52 @@ table tr td {
     background-color: rgba(127, 141, 163, 1);
     color: white;
     padding: 5px;
-    border-collapse: collapse;
 }
 table {
-    width: 30%;
-    margin-left: 35%;
-    margin-top: 50px;
+    font-size: 28px;
+    width: 100%;
+}
+td {
+    width: 16%;
+    height: 20px;
 }
 body {
     background-color: rgba(127, 141, 163, 0.8);
 }
 
 form {
+    display: flex;
+    flex-direction: column;
     background-color: rgba(127, 141, 163, 1);
-    width: 200px;
-    margin-left: 40%;
-    margin-top: 50px;
+    width: 100%;
     padding: 10px;
 }
-.element {
+.element, .button {
+    display: flex;
+    flex-direction: column;
+    font-size: 28px;
+    width: 60%;
     padding: 10px;
+    margin-left: 18%;
+}
+input {
+    font-size: 20px;
+}
+
+@media only screen and (min-device-width: 768px) {
+    table {
+        width: 40%;
+        margin-left: 10%;
+        margin-top: 50px;
+    }
+    form {
+        background-color: rgba(127, 141, 163, 1);
+        width: 40%;
+        margin-left: 30%;
+        margin-top: 50px;
+        padding: 10px;
+    }
+    .element {
+        font-size: 28px;
+    }
 }

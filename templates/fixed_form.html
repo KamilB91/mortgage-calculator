@@ -1,7 +1,7 @@
 {% extends 'layout.html' %}
 
 {% block content %}
-<form action="{{ url_for('fixed') }}" method="post" style="justify-content: center">
+<form action="{{ url_for('fixed') }}" method="post">
     {{ form.hidden_tag() }}
     <div class="element">
         {{ form.mortgage.label }}
@@ -35,7 +35,7 @@
         {{ form.mortgage_type.label }}
         {{ form.mortgage_type }}
     </div>
-    <div class="element">
+    <div class="button">
         {{ form.submit }}
     </div>
 </form>
