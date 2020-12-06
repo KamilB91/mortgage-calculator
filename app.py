@@ -22,6 +22,8 @@ def fixed():
         overpayment_value = 0
         principal = 0
         installment = 0
+        outcome_list = []
+        initial_installment = 0
 
         q = 1 + (interest / 12)
         remaining_mortgage = form.mortgage.data
@@ -38,20 +40,32 @@ def fixed():
                     installment = remaining_mortgage * (q ** remaining_period) * (q - 1) / ((q ** remaining_period) - 1)
                     interest_value = remaining_mortgage * interest / 12
                     principal = installment - interest_value
+                    if i == 1:
+                        initial_installment = installment
                     if form.option.data == 'short':
                         installment = mortgage * (q ** period) * (q - 1) / ((q ** period) - 1)
                         principal = installment - interest_value
+                        if i == 1:
+                            initial_installment = installment
                 elif form.mortgage_type.data == 'variable':
                     principal = remaining_mortgage/remaining_period
                     interest_value = remaining_mortgage * interest / 12
                     installment = principal+interest_value
+                    if i == 1:
+                        initial_installment = installment
                     if form.option.data == 'short':
                         principal = mortgage/period
                         installment = principal + interest_value
+                        if i == 1:
+                            initial_installment = installment
+                outcome_list.append(installment)
                 if i == int(overpayment_start):
                     overpayment_value = form.overpayment_value.data
                 elif i in range(int(overpayment_start), int(overpayment_end)+1):
                     overpayment_value = form.overpayment_value.data
+                    if form.ascending_overpayment.data:
+                        overpayment_value = overpayment_value + (initial_installment-outcome_list[-1])
+                        print(outcome_list[-2], installment, (outcome_list[-2] - installment))
                 else:
                     overpayment_value = 0
 
@@ -71,7 +85,7 @@ def fixed():
                                          principal=round(principal, 2),
                                          interest_value=round(interest_value, 2),
                                          remaining_mortgage=round(remaining_mortgage, 2),
-                                         overpayment=overpayment_value)
+                                         overpayment=round(overpayment_value, 2))
                                     )
             remaining_period -= 1
         return render_template('fixed_mortgage.html', table=table(mortgage_details))
