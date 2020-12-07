@@ -26,15 +26,15 @@ class FixedForm(FlaskForm):
         ]
     )
     overpayment_start = IntegerField(
-        'A month where you do single overpayment or month where you start your multiple overpayments:',
+        'A month where you do single overpayment or month where you start your multiple overpayments:(optional)',
         validators=[Optional()],
     )
     overpayment_end = IntegerField(
-        'Last month of your overpayments if you do more than one overpayment.',
+        'Last month of your overpayments if you do more than one overpayment.(optional)',
         validators=[Optional()],
     )
     overpayment_value = IntegerField(
-        'Overpayment value',
+        'Overpayment value(optional)',
         validators=[Optional()],
     )
     ascending_overpayment = MultiCheckboxField('Ascending overpayments?',
