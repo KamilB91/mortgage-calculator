@@ -59,26 +59,37 @@ def fixed():
                         if i == 1:
                             initial_installment = installment
                 outcome_list.append(installment)
-                if i == int(overpayment_start):
-                    overpayment_value = form.overpayment_value.data
-                elif i in range(int(overpayment_start), int(overpayment_end)+1):
-                    overpayment_value = form.overpayment_value.data
-                    if form.ascending_overpayment.data:
-                        overpayment_value = overpayment_value + (initial_installment-outcome_list[-1])
-                        print(outcome_list[-2], installment, (outcome_list[-2] - installment))
-                else:
-                    overpayment_value = 0
+                if overpayment_start != None and overpayment_value != None:
+                    if i == int(overpayment_start):
+                        overpayment_value = form.overpayment_value.data
+                    else:
+                        overpayment_value = 0
 
-                if remaining_mortgage <= 0:
-                    remaining_mortgage = 0
-                    installment = 0
-                    principal = 0
-                    interest_value = 0
-                elif principal > remaining_mortgage:
-                    installment = remaining_mortgage + interest_value
-                    principal = remaining_mortgage
+                    if overpayment_end != None:
+                        if i in range(int(overpayment_start), int(overpayment_end)+1):
+                            overpayment_value = form.overpayment_value.data
+                            if form.ascending_overpayment.data:
+                                overpayment_value = overpayment_value + (initial_installment-outcome_list[-1])
+                                if overpayment_value >= remaining_mortgage:
+                                    overpayment_value = remaining_mortgage - principal
+                        else:
+                            overpayment_value = 0
 
-                remaining_mortgage -= (principal+overpayment_value)
+            if remaining_mortgage <= 0:
+                overpayment_value = 0
+                remaining_mortgage = 0
+                installment = 0
+                principal = 0
+                interest_value = 0
+            elif principal > remaining_mortgage:
+                overpayment_value = 0
+                installment = remaining_mortgage + interest_value
+                principal = remaining_mortgage
+
+            if overpayment_value == None:
+                overpayment_value = 0
+
+            remaining_mortgage -= (principal+overpayment_value)
 
             mortgage_details.append(dict(month=i,
                                          installment_value=round(installment, 2),

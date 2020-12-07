@@ -20,7 +20,7 @@ class FixedForm(FlaskForm):
         ]
     )
     period = IntegerField(
-        'For how long is mortgage?',
+        'For how many years is mortgage?',
         validators=[
             DataRequired()
         ]
@@ -28,17 +28,14 @@ class FixedForm(FlaskForm):
     overpayment_start = IntegerField(
         'A month where you do single overpayment or month where you start your multiple overpayments:',
         validators=[Optional()],
-        default='0'
     )
     overpayment_end = IntegerField(
-        'Last month of your overpayments. If you do overpayment once, leave 0 in this field:',
+        'Last month of your overpayments if you do more than one overpayment.',
         validators=[Optional()],
-        default='0'
     )
     overpayment_value = IntegerField(
         'Overpayment value',
         validators=[Optional()],
-        default=0
     )
     ascending_overpayment = MultiCheckboxField('Ascending overpayments?',
                                                choices=[('Yes', 'Yes')],
